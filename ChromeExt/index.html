@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Calendar UI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script> <!-- Fixed reference -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+
+<div class="TS-panel">
+    <!-- Search Box -->
+    <div class="TS-search">
+        <span class="material-icons">search</span>
+        <input type="text" id="search-box" placeholder="Search Events..." title="Type to search">
+    </div>
+
+    <!-- Dropdown & Date Pickers -->
+    <select id="calendar-select" class="TS-input">
+        <option disabled selected>Select Calendar</option>
+    </select>
+    <input type="date" id="start-date" class="TS-input">
+    <input type="date" id="end-date" class="TS-input">
+
+    <!-- Button + Total Hours -->
+    <button class="TS-btn" id="calculate">Calculate</button>
+    <div class="TS-total-hours" id="total-hours">Total Hours: 0</div>
+
+    <!-- Calendar List -->
+    <div class="calendar-header">
+        <h3>Select Calendars:</h3>
+    </div>
+    <div id="calendar-list">
+        <p class="loading-text">Loading...</p> <!-- Placeholder until data is loaded -->
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <label class="TS-toggle">
+        <input type="checkbox" id="dark-mode-toggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+</body>
+</html>

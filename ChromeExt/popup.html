@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Hours</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Calendar Hours</h2>
+
+    <!-- Date Selectors -->
+    <div class="date-container">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date">
+    </div>
+    <div class="date-container">
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date">
+    </div>
+
+    <!-- Search Box for Filtering Events -->
+    <div class="search-container">
+        <input type="text" id="event-search" placeholder="Search events...">
+    </div>
+
+    <!-- Calendar List -->
+    <div id="calendar-list" class="calendar-container"></div>
+
+    <!-- Total Hours -->
+    <div class="total-hours-container">
+        <span>Total Scheduled Hours:</span>
+        <span id="total-hours">0.00 hrs</span>
+    </div>
+
+    <!-- Calculate Button -->
+    <button id="calculate">Calculate</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>

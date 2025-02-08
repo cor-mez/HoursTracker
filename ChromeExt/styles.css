@@ -1,0 +1,126 @@
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #202124;
+    padding: 15px;
+    width: 320px;
+    background-color: #fff;
+}
+
+/* Header */
+h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a73e8;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Date Selector */
+.date-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.date-container label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.date-container input {
+    width: calc(100% - 4px);
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+}
+
+/* Search Box */
+.search-container {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#event-search {
+    width: calc(100% - 4px);
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Calendar List */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Individual Calendar Row */
+.calendar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 16px;
+    transition: background 0.2s, transform 0.1s ease-in-out;
+    background-color: var(--calendar-color, #e8f0fe);
+}
+
+.calendar-row.colored {
+    background-color: var(--calendar-color, #e8f0fe);
+}
+
+.calendar-checkbox {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Calendar Name */
+.calendar-name {
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+/* Hours Display */
+.calendar-hours {
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Total Hours Section */
+.total-hours-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 10px;
+    background: #f1f3f4;
+    border-radius: 8px;
+}
+
+/* Calculate Button */
+#calculate {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+#calculate:hover {
+    background-color: #174ea6;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
