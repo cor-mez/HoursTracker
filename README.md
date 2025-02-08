@@ -1,0 +1,2 @@
+# HoursTracker
+Google Extension HoursTracker
