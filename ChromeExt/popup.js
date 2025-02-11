@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const calendarListContainer = document.getElementById("calendar-list");
     const calculateButton = document.getElementById("calculate");
     const totalHoursSpan = document.getElementById("total-hours");
+    const searchBox = document.getElementById("event-search");
+    const viewSelect = document.getElementById('view-select');
+    const billableSection = document.getElementById('billable-section');
 
     function fetchCalendars() {
         console.log("🔄 [Popup] Requesting calendars...");
@@ -151,6 +154,90 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
+    function searchEvents() {
+        const keyword = searchBox.value.toLowerCase();
+        const selectedCalendars = Array.from(document.querySelectorAll(".calendar-checkbox:checked"))
+            .map(checkbox => checkbox.value);
+        const startDate = document.getElementById("start-date").value;
+        const endDate = document.getElementById("end-date").value;
+
+        if (!startDate || !endDate) {
+            alert("Please select a start and end date.");
+            return;
+        }
+    
+        if (selectedCalendars.length === 0) {
+            alert("Please select at least one calendar.");
+            return;
+        }
+
+        chrome.runtime.sendMessage(
+            { action: "searchEvents", calendars: selectedCalendars, keyword, startDate, endDate },
+            function (response) {
+                if (chrome.runtime.lastError) {
+                    console.error("❌ [Popup] Message port error:", chrome.runtime.lastError.message);
+                    alert("Failed to communicate with the background script.");
+                    return;
+                }
+
+                if (!response || response.error) {
+                    console.error("❌ [Popup] Error searching events:", response?.error || "Unknown error");
+                    alert(`Error searching events: ${response?.error || "Unknown error"}`);
+                    return;
+                }
+
+                const filteredEvents = response.events;
+                const calendarHours = {};
+
+                filteredEvents.forEach(event => {
+                    const calendarId = event.calendarId || event.organizer?.email;
+                    if (!calendarId) {
+                        console.warn("⚠️ Skipping event due to missing calendarId:", event);
+                        return;
+                    }
+
+                    const startTime = new Date(event.start.dateTime);
+                    const endTime = new Date(event.end.dateTime);
+                    const durationHours = (endTime - startTime) / (1000 * 60 * 60); // Convert to hours
+
+                    if (!calendarHours[calendarId]) {
+                        calendarHours[calendarId] = 0;
+                    }
+                    calendarHours[calendarId] += durationHours;
+                });
+
+                console.log("📊 Calculated hours per calendar:", calendarHours);
+
+                // Update UI for each calendar
+                Object.keys(calendarHours).forEach(calendarId => {
+                    let hoursElement = document.getElementById(`hours-${calendarId}`);
+                    if (!hoursElement) {
+                        hoursElement = document.createElement("span");
+                        hoursElement.id = `hours-${calendarId}`;
+                        hoursElement.classList.add("calendar-hours");
+                        document.querySelector(`.calendar-checkbox[value="${calendarId}"]`)
+                            .parentNode.appendChild(hoursElement);
+                    }
+                    hoursElement.textContent = `${calendarHours[calendarId].toFixed(2)} hrs`;
+                });
+
+                // Calculate and display total hours
+                const totalHours = Object.values(calendarHours).reduce((sum, hours) => sum + hours, 0);
+                totalHoursSpan.textContent = `${totalHours.toFixed(2)} hrs`;
+
+                console.log(`✅ Total Scheduled Hours: ${totalHours.toFixed(2)} hrs`);
+            }
+        );
+    }
+
     calculateButton.addEventListener("click", fetchEventsForSelectedCalendars);
+    searchBox.addEventListener("input", searchEvents);
+    viewSelect.addEventListener('change', function() {
+        if (viewSelect.value === 'billable-hours') {
+            billableSection.style.display = 'block';
+        } else {
+            billableSection.style.display = 'none';
+        }
+    });
     fetchCalendars();
 });

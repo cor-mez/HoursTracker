@@ -12,6 +12,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetchEvents(request, sendResponse);
         return true; // Keep message port open
     }
+
+    if (request.action === "searchEvents") {
+        console.log("✅ [Background] Handling searchEvents request.");
+        searchEvents(request, sendResponse);
+        return true; // Keep message port open
+    }
 });
 
 function fetchCalendars(sendResponse) {
@@ -98,6 +104,58 @@ function fetchEvents(request, sendResponse) {
                 pendingRequests--;
                 if (pendingRequests === 0) {
                     sendResponse({ error: "Failed to fetch events." });
+                }
+            });
+        });
+    });
+}
+
+function searchEvents(request, sendResponse) {
+    const { calendars, keyword, startDate, endDate } = request;
+
+    chrome.identity.getAuthToken({ interactive: true }, function (token) {
+        if (chrome.runtime.lastError || !token) {
+            console.error("❌ [Background] Failed to retrieve auth token.", chrome.runtime.lastError);
+            sendResponse({ error: "Authentication failed." });
+            return;
+        }
+
+        let allEvents = [];
+        let pendingRequests = calendars.length;
+
+        calendars.forEach(calendarId => {
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${startDate}T00:00:00Z&timeMax=${endDate}T23:59:59Z&singleEvents=true&orderBy=startTime`;
+
+            fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+            .then(response => response.json())
+            .then(data => {
+                console.log(`📊 [Background] Raw API Response for ${calendarId}:`, data);
+
+                if (!data.items || data.items.length === 0) {
+                    console.warn(`⚠️ [Background] No events found for calendar: ${calendarId}`);
+                } else {
+                    const filteredEvents = data.items.filter(event => event.summary && event.summary.toLowerCase().includes(keyword.toLowerCase()) && event.start?.dateTime && event.end?.dateTime)
+                        .map(event => ({
+                            calendarId: calendarId,
+                            summary: event.summary || "Unnamed Event",
+                            start: event.start,
+                            end: event.end
+                        }));
+
+                    allEvents = allEvents.concat(filteredEvents);
+                }
+
+                pendingRequests--;
+                if (pendingRequests === 0) {
+                    console.log("✅ [Background] Sending final event list to popup:", allEvents);
+                    sendResponse({ events: allEvents });
+                }
+            })
+            .catch(error => {
+                console.error(`❌ [Background] Error fetching events for ${calendarId}:`, error);
+                pendingRequests--;
+                if (pendingRequests === 0) {
+                    sendResponse({ error: "Failed to search events." });
                 }
             });
         });

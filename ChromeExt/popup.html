@@ -9,6 +9,15 @@
 <body>
     <h2>Calendar Hours</h2>
 
+    <!-- Dropdown Menu -->
+    <div class="dropdown-container">
+        <label for="view-select">Select View:</label>
+        <select id="view-select">
+            <option value="hours-tracker">Hours Tracker</option>
+            <option value="billable-hours">Billable Hours</option>
+        </select>
+    </div>
+
     <!-- Date Selectors -->
     <div class="date-container">
         <label for="start-date">Start Date:</label>
@@ -22,6 +31,27 @@
     <!-- Search Box for Filtering Events -->
     <div class="search-container">
         <input type="text" id="event-search" placeholder="Search events...">
+    </div>
+
+    <!-- Billable Hours Section -->
+    <div id="billable-section" style="display: none;">
+        <!-- Billable Hours Checkbox -->
+        <div class="billable-container">
+            <input type="checkbox" id="billable-hours">
+            <label for="billable-hours">Billable Hours</label>
+        </div>
+
+        <!-- Rate Entry Box -->
+        <div class="rate-container">
+            <label for="hourly-rate">Hourly Rate:</label>
+            <input type="number" id="hourly-rate" placeholder="Enter rate">
+        </div>
+
+        <!-- Billable Revenue -->
+        <div class="total-revenue-container">
+            <span>Billable Revenue:</span>
+            <span id="total-revenue">$0.00</span>
+        </div>
     </div>
 
     <!-- Calendar List -->
